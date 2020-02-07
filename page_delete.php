@@ -1,4 +1,5 @@
 <?php
+// check login
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("Location: ./page_login.php");

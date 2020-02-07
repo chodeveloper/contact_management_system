@@ -1,4 +1,5 @@
 <?php
+// check log
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("Location: ./page_login.php");
@@ -74,6 +75,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <?php
                                 require 'contactManager.php';
                                 $manager = new ContactManager();   
+                                // use contactmanager to see contacts that have birthday in current month
                                 $contacts = $manager->getBirthdayContacts();
                                 $list = "";
                                 if (count($contacts) > 0) {

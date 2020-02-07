@@ -36,6 +36,7 @@
                     <a class="nav-link" href="./page_file.php">Admin</a>
                 </li>
                 <?php
+                    // toggle nav menu if user is logged in/out
                     session_start();
                     if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         print <<<HERE
@@ -62,6 +63,7 @@ HERE;
         <div class="row mt-5">
             <div class="col-md">
                 <?php
+                    // toggle greeting messages
                     if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         echo "<h1>Hello!</h1><br>";
                         echo "<h5>Please sign in to use My Contacts menu</h5>";

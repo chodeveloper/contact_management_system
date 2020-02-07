@@ -2,6 +2,7 @@
 
 class Contact {
     
+    // contact class properties
     private $id;
     private $firstname;
     private $lastname;
@@ -28,10 +29,12 @@ class Contact {
         $this->salesrep_id = $rep;
     }
 
+    // public access
     public function getVars() {
         return get_object_vars($this);
     }
 
+    // methods to set properties
     public function setName($fn, $ln) {
         $this->firstname = $fn;
         $this->lastname = $ln;

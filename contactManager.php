@@ -5,65 +5,64 @@ require 'dbConnect.php';
 
 class ContactManager {
 
-    //set up database and table names
+    // set up database properties and table names
     private $db_name = "addressbook";
     private $table_name = "contacts";
     private $connection;
     private $db;
 
     public function __construct() {
-        //connect to MySQL and select database to use        
+        //connect to MySQL and select database to use in class       
         $this->connection = db_connect() or die(mysqli_error($this->connection));
         $this->db = mysqli_select_db($this->connection, $this->db_name) or die(mysql_error());
     }
 
+    // methods to get sales rep info -- technically this should be in a different class? but whatever  
     public function getSalesRepId() {
         $sql = "SELECT * FROM login WHERE username = ?";
-
+        // secure injection of current user email stored in session
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             mysqli_stmt_bind_param($stmt, 's', $_SESSION["email"]); 
-
+            // if it works .. 
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
             } 
         } 
         mysqli_stmt_close($stmt);
-
         $row = mysqli_fetch_array($result);
         return $row['id'];        
     }
-
+    
+    // let's grab all sales reps info -- it will be useful
     public function getSalesReps() {
-
         $sales = array();
         $sql = "SELECT id, firstname, lastname FROM login";
-
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
             } 
         } 
         mysqli_stmt_close($stmt);
-        
+        // array!
         while ($row = mysqli_fetch_array($result)) { 
             $sales[$row['id']] = $row['firstname']." ".$row['lastname'];
         }
         return $sales;
     }
 
+    // method to browse MY contacts!
     public function browseContacts() {
         $contacts = array();
         $salesrepId = $this->getSalesRepId();
-        
+        // only select MY data
         $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $salesrepId";
-
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
             } 
         } 
         mysqli_stmt_close($stmt);
-
+        // store each contact to the array
         while ($row = mysqli_fetch_array($result)) {
             $contact = new Contact($row['id'], stripslashes($row['firstname']), stripslashes($row['lastname']),
                                     stripslashes($row['phone']), stripslashes($row['email']),
@@ -74,7 +73,8 @@ class ContactManager {
         }
         return $contacts;
     }
-
+    
+    // method to browse ALL contacts -- admin wants to export all data!
     public function browseAllContacts() {
         $contacts = array();
         
@@ -98,6 +98,7 @@ class ContactManager {
         return $contacts;
     }
 
+    // get a specific contact using its id
     public function getContact($id) {
         $salesrepId = $this->getSalesRepId();
         $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $salesrepId AND id = ?";
@@ -119,6 +120,7 @@ class ContactManager {
         return $contact;
     }
 
+    // method to get a list of contacts with birthday in current month
     public function getBirthdayContacts() {
         $bdayContacts = array();
         $month = date("n");
@@ -144,6 +146,7 @@ class ContactManager {
         return $bdayContacts;
     }
 
+    // method to add a new contact 
     public function addContact(Contact $new) {
         $salesrepId = $this->getSalesRepId();
         
@@ -166,6 +169,7 @@ class ContactManager {
         return false;
     }
 
+    // method to modify the selected contact
     public function modifyContact(Contact $selected) {
 
         $sql = "UPDATE $this->table_name SET firstname=?, lastname=?, phone=?, email=?, address_street=?, address_city=?, address_province=?, address_postalcode=?, birthday=?, salesrep_id=? WHERE id=?";
@@ -187,6 +191,7 @@ class ContactManager {
         return false;
     }
 
+    // method to delete the selected contact
     public function deleteContact($selected) {
         
         $sql = "DELETE FROM $this->table_name WHERE id = ?";
@@ -205,6 +210,7 @@ class ContactManager {
         return false;
     }
 
+    // method to get all emails of MY contacts
     public function getEmails() {
         $emails = array();
         $salesrepId = $this->getSalesRepId();
@@ -223,13 +229,5 @@ class ContactManager {
             array_push($emails, $email);
         }
         return $emails;
-    }
-
-    public function exportContacts($csv) {
-        
-    }
-
-    public function importContacts($csv) {
-
     }
 }

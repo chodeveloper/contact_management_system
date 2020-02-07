@@ -59,6 +59,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="row justify-content-center">
             <div class="col-lg-9 col-md-11">  
                 <?php 
+                    // creat all-in-one form
                     require 'contactManager.php';
                     $manager = new ContactManager();
                     $emails = $manager->getEmails();

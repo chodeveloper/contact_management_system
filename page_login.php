@@ -1,4 +1,5 @@
 <?php
+//prevent same login session
 session_start();
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("Location: .");

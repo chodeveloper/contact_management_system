@@ -72,6 +72,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
                     require 'contactManager.php';
                     $manager = new ContactManager();
+                    // use contactmanager to get properties of the selected contact
                     $vars = $manager->getContact($selected)->getVars();
                     $year = explode("-", $vars['birthday'])[0];
                     $month = explode("-", $vars['birthday'])[1];

@@ -1,4 +1,5 @@
 <?php
+// check email username and password
 if ((!$_POST['username']) || (!$_POST['password'])) {
     header("Location: ./page_login.php");
     exit;
@@ -8,8 +9,10 @@ session_start();
 $isValid = true;
 $_SESSION['login_error'] = "";
 
+// validate username -- email
 if (isset($_POST['username']) && !empty($_POST['username'])) {
     $email = $_POST["username"];
+    // email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['login_error'] .= "Please enter valid email address.<br>";
         $isValid = false;
@@ -19,12 +22,15 @@ if (isset($_POST['username']) && !empty($_POST['username'])) {
     $isValid = false;
 }
 
+// validate password
 if (isset($_POST['password']) && !empty($_POST['password'])) {
+    // check minimum length
     $password = $_POST["password"];
     if (strlen($_POST["password"]) < 8) {
         $_SESSION['login_error'] .= "Your password must contain at least 8 characters.<br>";
         $isValid = false;
     } 
+    // check characters
     if (!ctype_alnum($password)) {
         // same as preg_match('/^[a-zA-Z0-9]+$/', $var)
         $_SESSION['login_error'] .= "Your password must contain only letters or digits.<br>";
@@ -64,7 +70,9 @@ if ($stmt = mysqli_prepare($connection, $sql)) {
             mysqli_stmt_bind_result($stmt, $username, $hashedPw, $fn, $ln);
             
             if (mysqli_stmt_fetch($stmt)) {
+                // if password is verified
                 if (password_verify($password, $hashedPw)) {
+                    // store useful data in session
                     unset($_SESSION['login_error']);                    
                     $_SESSION['loggedin'] = true;
                     $_SESSION['email'] = $username;  

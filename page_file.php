@@ -1,4 +1,6 @@
 <?php
+    // no need to check login
+    // use filemanager and contactmanager
     require 'fileManager.php';
     $fmanager = new FileManager();
     $fmanager->createCSV();
@@ -90,6 +92,8 @@ HERE;
                             </div> 
                         </form> 
                         <?php 
+
+                            // all-in-one form
                             $err = "";
                             $msg = "";
                             if (isset($_POST['check']) == "yes") {

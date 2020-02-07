@@ -1,4 +1,5 @@
 <?php
+// check login 
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("Location: ./page_login.php");
@@ -83,7 +84,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <tbody>
                             <?php
                                 require 'contactManager.php';
-                                $manager = new ContactManager();   
+                                $manager = new ContactManager();  
+                                // browse MY contact and populate the page 
                                 $contacts = $manager->browseContacts();
                                 $list = "";
                                 if (count($contacts) > 0) {

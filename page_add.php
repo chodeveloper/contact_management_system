@@ -1,4 +1,5 @@
 <?php
+// use session to check if user is still logged in
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("Location: ./page_login.php");

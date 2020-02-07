@@ -1,4 +1,5 @@
 <?php
+// check email username and password inputs
 if ((!$_POST['username']) || (!$_POST['password'])) {
     header("Location: ./page_signup.php");
     exit;
@@ -9,13 +10,15 @@ session_start();
 $isValid = true;
 $_SESSION['signup_msg'] = "";
 
+// validate username -- email
 if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
     $email = trim($_POST["username"]);
+    // email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['signup_msg'] .= "Please enter valid email address.<br>";
         $isValid = false;
     } 
-
+    // email length -- maximum 50
     if (strlen($email) > 50) {
         $_SESSION['signup_msg'] .= "Your email address is too long.<br>";
         $isValid = false;
@@ -25,6 +28,7 @@ if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
     $isValid = false;
 }
 
+// validate first and last name 
 if (isset($_POST['firstname']) && !empty(trim($_POST['firstname']))) {
     $firstname = trim($_POST["firstname"]);
 
@@ -49,12 +53,15 @@ if (isset($_POST['lastname']) && !empty(trim($_POST['lastname']))) {
     $isValid = false;
 }
 
+// validate passwords 
 if (isset($_POST['password']) && !empty($_POST['password'])) {
     $password = $_POST["password"];
+    // minimum characters = 8
     if (strlen($_POST["password"]) < 8) {
         $_SESSION['signup_msg'] .= "Your password must contain at least 8 characters.<br>";
         $isValid = false;
     } 
+    // is it alphanum only?
     if (!ctype_alnum($password)) {
         // same as preg_match('/^[a-zA-Z0-9]+$/', $var)
         $_SESSION['signup_msg'] .= "Your password must contain only letters or digits.<br>";
@@ -92,6 +99,7 @@ if ($stmt1 = mysqli_prepare($connection, $sql1)) {
     if (mysqli_stmt_execute($stmt1)) {
         mysqli_stmt_store_result($stmt1);
 
+        // if anything found, user should take another username email
         if (mysqli_stmt_num_rows($stmt1) > 0) {
             $_SESSION['signup_msg'] .= "This username is already taken. Please try again.<br>";
             header('Location: ./page_signup.php');
@@ -105,10 +113,11 @@ if ($stmt1 = mysqli_prepare($connection, $sql1)) {
 } 
 mysqli_stmt_close($stmt1);
 
+// if all inputs are valid 
 $sql2 = "INSERT INTO $table_name (username, password, firstname, lastname) VALUES (?, ?, ?, ?)";
 if ($stmt2 = mysqli_prepare($connection, $sql2)) {
     mysqli_stmt_bind_param($stmt2, 'ssss', $email, $hashed, $firstname, $lastname); 
-
+    // insert all info to the table to create a new account!
     if (mysqli_stmt_execute($stmt2)) {    
         $_SESSION['signup_msg'] = "Your account was successfully created :)";
         header('Location: ./page_login.php');
