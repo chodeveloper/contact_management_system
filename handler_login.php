@@ -71,7 +71,7 @@ if ($stmt = mysqli_prepare($connection, $sql)) {
                     $email = explode('@', $username);
                     $user = array_shift($email);
                     $_SESSION['username'] = $user;  
-                    header('Location: ./index.php');      
+                    header('Location: .');      
                 } else {
                     $_SESSION['login_error'] .= "Email address and/or passwords are incorrect. Please try again.<br>";
                     header('Location: ./page_login.php');
