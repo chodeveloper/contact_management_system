@@ -41,14 +41,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Admin
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Import Data</a>
-                        <a class="dropdown-item" href="#">Export Data</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="./page_file.php">Admin</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="./handler_logout.php">Log Out</a>
@@ -89,7 +83,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <tbody>
                             <?php
                                 require 'contactManager.php';
-                                $manager = new ContactManager($_SESSION["email"]);   
+                                $manager = new ContactManager();   
                                 $contacts = $manager->browseContacts();
                                 $list = "";
                                 if (count($contacts) > 0) {

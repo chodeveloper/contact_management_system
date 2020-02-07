@@ -11,7 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 require 'contactManager.php';
-$manager = new ContactManager($_SESSION["email"]);
+$manager = new ContactManager();
 
 if ($action == "add" || $action == "edit") {
     if(strlen(trim($_POST['firstname']))<=0 || strlen(trim($_POST['lastname']))<=0 ||
@@ -31,9 +31,10 @@ if ($action == "add" || $action == "edit") {
             $birthday = $_POST['year']."-".$_POST['month']."-".$_POST['day'];
 
             if ($action == "add") {
+                $salesrepId = $manager->getSalesRepId();
                 $newContact = new Contact(0, $_POST['firstname'], $_POST['lastname'], $_POST['phone'], 
                                         $_POST['email'], $_POST['ad_street'], $_POST['ad_city'],
-                                        $_POST['ad_prov'], $_POST['ad_code'], $birthday, $manager->getSalesRepId());
+                                        $_POST['ad_prov'], $_POST['ad_code'], $birthday, $salesrepId);
 
                 if ($manager->addContact($newContact)) {
                     $_SESSION['submit_msg'] = "Your new contact data was successfully added :)";

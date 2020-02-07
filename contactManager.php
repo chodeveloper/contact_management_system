@@ -5,22 +5,23 @@ require 'dbConnect.php';
 
 class ContactManager {
 
-    private $_salesrepId;
     //set up database and table names
     private $db_name = "addressbook";
     private $table_name = "contacts";
     private $connection;
     private $db;
 
-    public function __construct($username) {
+    public function __construct() {
         //connect to MySQL and select database to use        
         $this->connection = db_connect() or die(mysqli_error($this->connection));
         $this->db = mysqli_select_db($this->connection, $this->db_name) or die(mysql_error());
+    }
 
+    public function getSalesRepId() {
         $sql = "SELECT * FROM login WHERE username = ?";
 
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
-            mysqli_stmt_bind_param($stmt, 's', $username); 
+            mysqli_stmt_bind_param($stmt, 's', $_SESSION["email"]); 
 
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
@@ -29,11 +30,7 @@ class ContactManager {
         mysqli_stmt_close($stmt);
 
         $row = mysqli_fetch_array($result);
-        $this->_salesrepId = $row['id'];
-    }
-
-    public function getSalesRepId() {
-        return $this->_salesrepId;
+        return $row['id'];        
     }
 
     public function getSalesReps() {
@@ -56,8 +53,32 @@ class ContactManager {
 
     public function browseContacts() {
         $contacts = array();
+        $salesrepId = $this->getSalesRepId();
         
-        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $this->_salesrepId";
+        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $salesrepId";
+
+        if ($stmt = mysqli_prepare($this->connection, $sql)) {
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
+            } 
+        } 
+        mysqli_stmt_close($stmt);
+
+        while ($row = mysqli_fetch_array($result)) {
+            $contact = new Contact($row['id'], stripslashes($row['firstname']), stripslashes($row['lastname']),
+                                    stripslashes($row['phone']), stripslashes($row['email']),
+                                    stripslashes($row['address_street']), stripslashes($row['address_city']), stripslashes($row['address_province']),
+                                    stripslashes($row['address_postalcode']), stripslashes($row['birthday']), stripslashes($row['salesrep_id']));
+
+            array_push($contacts, $contact);
+        }
+        return $contacts;
+    }
+
+    public function browseAllContacts() {
+        $contacts = array();
+        
+        $sql = "SELECT * FROM $this->table_name";
 
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             if (mysqli_stmt_execute($stmt)) {
@@ -78,8 +99,8 @@ class ContactManager {
     }
 
     public function getContact($id) {
-
-        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $this->_salesrepId AND id = ?";
+        $salesrepId = $this->getSalesRepId();
+        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $salesrepId AND id = ?";
 
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             mysqli_stmt_bind_param($stmt, 'i', $id); 
@@ -101,8 +122,8 @@ class ContactManager {
     public function getBirthdayContacts() {
         $bdayContacts = array();
         $month = date("n");
-
-        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $this->_salesrepId AND MONTH(birthday) = $month";
+        $salesrepId = $this->getSalesRepId();
+        $sql = "SELECT * FROM $this->table_name WHERE salesrep_id = $salesrepId AND MONTH(birthday) = $month";
 
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             if (mysqli_stmt_execute($stmt)) {
@@ -124,6 +145,7 @@ class ContactManager {
     }
 
     public function addContact(Contact $new) {
+        $salesrepId = $this->getSalesRepId();
         
         $sql = "INSERT INTO $this->table_name (firstname, lastname, phone, email, address_street, address_city, address_province, address_postalcode, birthday, salesrep_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
@@ -131,7 +153,7 @@ class ContactManager {
             $vars = $new->getVars();
             mysqli_stmt_bind_param($stmt, 'sssssssssi', $vars['firstname'], $vars['lastname'], $vars['phone'], $vars['email'],
                                 $vars['ad_street'], $vars['ad_city'], $vars['ad_province'], $vars['ad_postalcode'],
-                                $vars['birthday'], $this->_salesrepId); 
+                                $vars['birthday'], $salesrepId); 
 
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
@@ -185,8 +207,9 @@ class ContactManager {
 
     public function getEmails() {
         $emails = array();
-        
-        $sql = "SELECT email FROM $this->table_name WHERE salesrep_id = $this->_salesrepId";
+        $salesrepId = $this->getSalesRepId();
+
+        $sql = "SELECT email FROM $this->table_name WHERE salesrep_id = $salesrepId";
 
         if ($stmt = mysqli_prepare($this->connection, $sql)) {
             if (mysqli_stmt_execute($stmt)) {

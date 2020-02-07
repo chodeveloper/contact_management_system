@@ -29,7 +29,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown active">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Contacts
                     </a>
@@ -40,20 +40,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <a class="dropdown-item active" href="./page_email.php">Email Contacts <span class="sr-only">(current)</span></a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Admin
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Import Data</a>
-                        <a class="dropdown-item" href="#">Export Data</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="./page_file.php">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./page_login.php">Log In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./page_signup.php">Sign Up</a>
+                    <a class="nav-link" href="./handler_logout.php">Log Out</a>
                 </li>                    
             </ul>
         </div>
@@ -69,7 +60,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             <div class="col-lg-9 col-md-11">  
                 <?php 
                     require 'contactManager.php';
-                    $manager = new ContactManager($_SESSION["email"]);
+                    $manager = new ContactManager();
                     $emails = $manager->getEmails();
 
                     $send = true;
