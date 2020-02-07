@@ -10,8 +10,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-if ($action == "add") {
+require 'contactManager.php';
+$manager = new ContactManager($_SESSION["email"]);
 
+if ($action == "add" || $action == "edit") {
     if(strlen(trim($_POST['firstname']))<=0 || strlen(trim($_POST['lastname']))<=0 ||
        strlen(trim($_POST['phone']))<=0 || strlen(trim($_POST['email']))<=0 ||
        strlen(trim($_POST['ad_street']))<=0 || strlen(trim($_POST['ad_city']))<=0 ||
@@ -26,27 +28,45 @@ if ($action == "add") {
             isset($_POST['ad_prov']) && isset($_POST['ad_code']) && isset($_POST['year']) && 
             isset($_POST['month']) && isset($_POST['day'])) {
 
-            require 'contactManager.php';
-            $manager = new ContactManager($_SESSION["email"]);
-
             $birthday = $_POST['year']."-".$_POST['month']."-".$_POST['day'];
-            
-            $newContact = new Contact(0, $_POST['firstname'], $_POST['lastname'], $_POST['phone'], 
+
+            if ($action == "add") {
+                $newContact = new Contact(0, $_POST['firstname'], $_POST['lastname'], $_POST['phone'], 
                                         $_POST['email'], $_POST['ad_street'], $_POST['ad_city'],
                                         $_POST['ad_prov'], $_POST['ad_code'], $birthday, $manager->getSalesRepId());
 
-            if ($manager->addContact($newContact)) {
-                $_SESSION['submit_msg'] = "Your new contact data was successfully added :)";
-                header("Location: ./page_add.php");
+                if ($manager->addContact($newContact)) {
+                    $_SESSION['submit_msg'] = "Your new contact data was successfully added :)";
+                    header("Location: ./page_add.php");
+                } else {
+                    $_SESSION['submit_error'] = "Please try again.";
+                    header("Location: ./page_add.php");
+                }   
             } else {
-                $_SESSION['submit_error'] = "Please try again.";
-                header("Location: ./page_add.php");
-            }      
-            
+                
+                $editedContact = new Contact($selected, $_POST['firstname'], $_POST['lastname'], $_POST['phone'], 
+                                        $_POST['email'], $_POST['ad_street'], $_POST['ad_city'],
+                                        $_POST['ad_prov'], $_POST['ad_code'], $birthday, $_POST['salesrep']);
+
+                if ($manager->modifyContact($editedContact)) {
+                    $_SESSION['submit_msg'] = "Your contact data was successfully modified :)";
+                    header("Location: ./page_browse.php");
+                } else {
+                    $_SESSION['submit_error'] = "Please try again.";
+                    header("Location: ./page_edit.php?id=$selected");
+                }   
+            }           
         }
     }   
-} elseif ($action == "edit") {
-    
+
+} elseif ($action == "delete") {
+    if ($manager->deleteContact($selected)) {
+        $_SESSION['submit_msg'] = "Your contact data was successfully deleted :)";
+        header("Location: ./page_browse.php");
+    } else {
+        $_SESSION['submit_error'] = "Please try again.";
+        header("Location: ./page_delete.php?id=$selected");
+    }  
 }
 
 

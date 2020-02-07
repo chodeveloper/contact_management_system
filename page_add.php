@@ -60,7 +60,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="row justify-content-center">
             <div class="col-lg-9 col-md-11 d-flex flex-column flex-md-row justify-content-between align-items-baseline">
                 <h2>Add New Contact</h2>
-                <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>  
+                <p class="text-muted">Sales Rep: <?php echo htmlspecialchars($_SESSION["username"]); ?></p>  
             </div>
         </div>    
         <div class="row justify-content-center">

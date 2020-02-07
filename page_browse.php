@@ -60,12 +60,20 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="row">
             <div class="col d-flex flex-column flex-md-row justify-content-between align-items-baseline">
                 <h2>My Contacts List</h2>
-                <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>  
+                <p class="text-muted">Sales Rep: <?php echo htmlspecialchars($_SESSION["username"]); ?></p>  
             </div>
         </div>           
-        <div class="row">
-            <div class="col">             
-                <div class="table-responsive py-4">
+        <div class="row py-4">
+            <div class="col">   
+                <p class="small text-info">
+                    <?php 
+                        if(isset($_SESSION['submit_msg'])) {
+                            echo $_SESSION['submit_msg'];
+                            unset($_SESSION['submit_msg']);                
+                        }       
+                    ?>
+                </p>          
+                <div class="table-responsive">
                     <table class="table table-hover table-sm small">
                         <thead>
                             <tr>
@@ -89,7 +97,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                         $cVars = $c->getVars();
                                         if ($cVars['salesrep_id'] == $manager->getSalesRepId()) {
                                             $list .= "<tr><td><a href=\"./page_edit.php?id=".$cVars['id']."\"><i class=\"fas fa-pen\"></i></a></td>";
-                                            $list .= "<td><a class=\"text-danger\" href=\"./handler_contact.php?delete=".$cVars['id']."\"><i class=\"fas fa-trash-alt\"></i></a></td>";
+                                            $list .= "<td><a class=\"text-danger\" href=\"./page_delete.php?id=".$cVars['id']."\"><i class=\"fas fa-trash-alt\"></i></a></td>";
                                             $list .= "<td>".$cVars['firstname']." ".$cVars['lastname']."</td>";
                                             $list .= "<td>".$cVars['phone']."</td>";
                                             $list .= "<td style=\"word-break:break-all;\">".$cVars['email']."</td>";

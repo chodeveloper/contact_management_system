@@ -25,6 +25,30 @@ if (isset($_POST['username']) && !empty(trim($_POST['username']))) {
     $isValid = false;
 }
 
+if (isset($_POST['firstname']) && !empty(trim($_POST['firstname']))) {
+    $firstname = trim($_POST["firstname"]);
+
+    if (strlen($firstname) > 50) {
+        $_SESSION['signup_msg'] .= "Your first name is too long.<br>";
+        $isValid = false;
+    }  
+} else {
+    $_SESSION['signup_msg'] .= "Please enter your first name.<br>";
+    $isValid = false;
+}
+
+if (isset($_POST['lastname']) && !empty(trim($_POST['lastname']))) {
+    $lastname = trim($_POST["lastname"]);
+
+    if (strlen($lastname) > 50) {
+        $_SESSION['signup_msg'] .= "Your last name is too long.<br>";
+        $isValid = false;
+    }  
+} else {
+    $_SESSION['signup_msg'] .= "Please enter your last name.<br>";
+    $isValid = false;
+}
+
 if (isset($_POST['password']) && !empty($_POST['password'])) {
     $password = $_POST["password"];
     if (strlen($_POST["password"]) < 8) {
@@ -81,9 +105,9 @@ if ($stmt1 = mysqli_prepare($connection, $sql1)) {
 } 
 mysqli_stmt_close($stmt1);
 
-$sql2 = "INSERT INTO $table_name (username, password) VALUES (?, ?)";
+$sql2 = "INSERT INTO $table_name (username, password, firstname, lastname) VALUES (?, ?, ?, ?)";
 if ($stmt2 = mysqli_prepare($connection, $sql2)) {
-    mysqli_stmt_bind_param($stmt2, 'ss', $email, $hashed); 
+    mysqli_stmt_bind_param($stmt2, 'ssss', $email, $hashed, $firstname, $lastname); 
 
     if (mysqli_stmt_execute($stmt2)) {    
         $_SESSION['signup_msg'] = "Your account was successfully created :)";

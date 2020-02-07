@@ -37,6 +37,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="./page_browse.php">Browse/Manage</a>
                         <a class="dropdown-item active" href="./page_add.php">Add New <span class="sr-only">(current)</span></a>
+                        <a class="dropdown-item" href="./page_birthday.php">Birthday</a>
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
                 </li>
@@ -55,46 +56,51 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             </ul>
         </div>
     </nav>
-    <div class="container pt-5">        
-        <div class="row">
-            <div class="col-md">
-                <h2>My Contact List</h2>
-                <br>
-                <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>                
-                <div class="table-responsive py-4">
-                    <table class="table table-hover table-sm small">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>DOB</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                require 'contactManager.php';
-                                $manager = new ContactManager($_SESSION["email"]);   
-                                $manager->browseContacts();
-                                $contacts = $manager->getContacts();
-                                $list = "";
-                                foreach ($contacts as $c) {
-                                    $list .= "<tr><td><a href=\"./handler_contact.php?edit=".$c->getId()."\"><i class=\"fas fa-pen\"></i></a></td>";
-                                    $list .= "<td><a href=\"./handler_contact.php?delete=".$c->getId()."\"><i class=\"fas fa-trash-alt\"></i></a></td>";
-                                    $list .= "<td>".$c->getName()."</td>";
-                                    $list .= "<td>".$c->getPhone()."</td>";
-                                    $list .= "<td style=\"word-break:break-all;\">".$c->getEmail()."</td>";
-                                    $list .= "<td>".$c->getAddress()."</td>";
-                                    $list .= "<td>".$c->getBirthday()."</td></tr>";
-                                }
-                                echo $list;
-                            ?>                        
-                        </tbody>  
-                    </table>
-                </div>
+    <div class="container py-5">    
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11 d-flex flex-column flex-md-row justify-content-between align-items-baseline">
+                <h2>Add New Contact</h2>
+                <p class="text-muted">Sales Rep: <?php echo htmlspecialchars($_SESSION["username"]); ?></p>  
+            </div>
+        </div>    
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11">   
+                <?php 
+                    // fetch the passed request
+                    $request = $_SERVER['QUERY_STRING'];
+                    //parse the request and selected contact
+                    list($var, $selected) = explode('=', $request);
+
+                    if ($var != "id" || !ctype_digit($selected)) {
+                        header("Location: ./page_browse.php");
+                        exit;
+                    }
+                    require 'contactManager.php';
+                    $manager = new ContactManager($_SESSION["email"]);
+                    $vars = $manager->getContact($selected)->getVars();
+                ?>                          
+                <form action="handler_contact.php?delete=<?php echo $selected; ?>" method="post" class="py-4">
+                    <div class="row">
+                        <div class="col">
+                            Do you really want to delete the contact of 
+                            <?php echo "<span class=\"font-weight-bold\">".$vars['firstname']." ".$vars['lastname']."</span>"?>?
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col text-right">
+                            <input type="submit" class="btn btn-danger" value="Delete">
+                            <a href="./page_browse.php" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <p class="small text-danger">
+                    <?php 
+                        if(isset($_SESSION['submit_error'])) {
+                            echo $_SESSION['submit_error'];
+                            unset($_SESSION['submit_error']);                
+                        }       
+                    ?>
+                </p>
             </div>            
         </div>        
     </div>

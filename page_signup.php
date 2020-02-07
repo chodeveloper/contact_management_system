@@ -68,6 +68,14 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                         <input type="email" class="form-control" name="username" id="username" placeholder="hello@example.com">
                     </div>
                     <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" name="firstname" id="firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" name="lastname" id="lastname">
+                    </div>
+                    <div class="form-group">
                         <label for="pwd">Password</label>
                         <input type="password" class="form-control" name="password" id="password">
                         <ul class="small text-muted mt-2">

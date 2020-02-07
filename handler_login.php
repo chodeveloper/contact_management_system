@@ -52,7 +52,7 @@ $db = mysqli_select_db($connection, $db_name) or die(mysqli_error($connection));
 
 
 //create SQL statement and issue query
-$sql = "SELECT username, password FROM $table_name WHERE username = ?";
+$sql = "SELECT username, password, firstname, lastname FROM $table_name WHERE username = ?";
 if ($stmt = mysqli_prepare($connection, $sql)) {
     mysqli_stmt_bind_param($stmt, 's', $email); 
 
@@ -61,16 +61,14 @@ if ($stmt = mysqli_prepare($connection, $sql)) {
 
         if (mysqli_stmt_num_rows($stmt) > 0) {
             
-            mysqli_stmt_bind_result($stmt, $username, $hashedPw);
+            mysqli_stmt_bind_result($stmt, $username, $hashedPw, $fn, $ln);
             
             if (mysqli_stmt_fetch($stmt)) {
                 if (password_verify($password, $hashedPw)) {
                     unset($_SESSION['login_error']);                    
                     $_SESSION['loggedin'] = true;
                     $_SESSION['email'] = $username;  
-                    $email = explode('@', $username);
-                    $user = array_shift($email);
-                    $_SESSION['username'] = $user;  
+                    $_SESSION['username'] = $fn." ".$ln;  
                     header('Location: .');      
                 } else {
                     $_SESSION['login_error'] .= "Email address and/or passwords are incorrect. Please try again.<br>";
