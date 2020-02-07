@@ -35,8 +35,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     My Contacts <span class="sr-only">(current)</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="./page_browse.php">Browse/Manage</a>
-                        <a class="dropdown-item active" href="./page_add.php">Add New <span class="sr-only">(current)</span></a>
+                        <a class="dropdown-item active" href="./page_browse.php">Browse/Manage <span class="sr-only">(current)</span></a>
+                        <a class="dropdown-item" href="./page_add.php">Add New</a>
                         <a class="dropdown-item" href="./page_birthday.php">Birthday</a>
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
@@ -59,7 +59,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="container py-5">    
         <div class="row justify-content-center">
             <div class="col-lg-9 col-md-11 d-flex flex-column flex-md-row justify-content-between align-items-baseline">
-                <h2>Add New Contact</h2>
+                <h2>Modify Contact</h2>
                 <p class="text-muted">Sales Rep: <?php echo htmlspecialchars($_SESSION["username"]); ?></p>  
             </div>
         </div>    

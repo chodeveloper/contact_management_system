@@ -183,6 +183,25 @@ class ContactManager {
         return false;
     }
 
+    public function getEmails() {
+        $emails = array();
+        
+        $sql = "SELECT email FROM $this->table_name WHERE salesrep_id = $this->_salesrepId";
+
+        if ($stmt = mysqli_prepare($this->connection, $sql)) {
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
+            } 
+        } 
+        mysqli_stmt_close($stmt);
+
+        while ($row = mysqli_fetch_array($result)) {
+            $email = $row['email'];
+            array_push($emails, $email);
+        }
+        return $emails;
+    }
+
     public function exportContacts($csv) {
         
     }
