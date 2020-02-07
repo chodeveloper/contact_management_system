@@ -37,6 +37,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="./page_browse.php">Browse/Manage</a>
                         <a class="dropdown-item active" href="./page_add.php">Add New <span class="sr-only">(current)</span></a>
+                        <a class="dropdown-item" href="./page_birthday.php">Birthday</a>
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
                 </li>
@@ -55,12 +56,15 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             </ul>
         </div>
     </nav>
-    <div class="container py-5">        
-        <div class="row">
-            <div class="col-md">
+    <div class="container py-5">    
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11 d-flex flex-column flex-md-row justify-content-between align-items-baseline">
                 <h2>Add New Contact</h2>
-                <br>
-                <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>                
+                <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>  
+            </div>
+        </div>    
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11">                             
                 <form action="handler_contact.php?add=" method="post" class="py-4">
                     <div class="row">
                         <div class="col-md-6">
@@ -79,26 +83,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <div class="form-group">
                                 <label for="email">Email Address</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date of Birth</label>
-                                <div class="form-row">
-                                    <div class="col">
-                                        <select class="form-control" id="year" name="year" required>
-                                            <?php for($i=2000;$i>1959;$i--) { if($i==1970) echo "<option value=\"$i\" selected>$i</option>"; else echo "<option value=\"$i\">$i</option>"; } ?>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <select class="form-control" id="month" name="month" required>
-                                            <?php for($i=1;$i<=12;$i++) { if($i<10) $m = "0".$i; else $m = $i; echo "<option value=\"$m\">$m</option>"; } ?>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <select class="form-control" id="day" name="day" required>
-                                            <?php for($i=1;$i<=31;$i++) { if($i<10) $m = "0".$i; else $m = $i; echo "<option value=\"$m\">$m</option>"; } ?>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
                         </div>         
                         <div class="col-md-6">
@@ -122,14 +106,55 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <select class="form-control" id="year" name="year" required>
+                                            <option value="0" disabled selected>Year</option>
+                                            <?php for($i=1960;$i<=2000;$i++) echo "<option value=\"$i\">$i</option>"; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" id="month" name="month" required>
+                                            <option value="0" disabled selected>Month</option>
+                                            <?php for($i=1;$i<=12;$i++) { if($i<10) $m = "0".$i; else $m = $i; echo "<option value=\"$m\">$m</option>"; } ?>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" id="day" name="day" required>
+                                            <option value="0" disabled selected>Day</option>
+                                            <?php for($i=1;$i<=31;$i++) { if($i<10) $m = "0".$i; else $m = $i; echo "<option value=\"$m\">$m</option>"; } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col text-right">
+                    <div class="row mt-2 align-items-baseline">
+                        <div class="col-9">
+                        <p class="small text-info">
+                            <?php 
+                                if(isset($_SESSION['submit_msg'])) {
+                                    echo $_SESSION['submit_msg'];
+                                    unset($_SESSION['submit_msg']);                
+                                }       
+                            ?>
+                        </p>
+                        </div>
+                        <div class="col-3 text-right">
                             <input type="submit" class="btn btn-primary" value="Submit">
                         </div>
                     </div>
                 </form>
+                <p class="small text-danger">
+                    <?php 
+                        if(isset($_SESSION['submit_error'])) {
+                            echo $_SESSION['submit_error'];
+                            unset($_SESSION['submit_error']);                
+                        }       
+                    ?>
+                </p>
             </div>            
         </div>        
     </div>

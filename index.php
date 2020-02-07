@@ -28,6 +28,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="./page_browse.php">Browse/Manage</a>
                         <a class="dropdown-item" href="./page_add.php">Add New</a>
+                        <a class="dropdown-item" href="./page_birthday.php">Birthday</a>
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
                 </li>

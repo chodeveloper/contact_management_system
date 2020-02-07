@@ -35,9 +35,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     My Contacts <span class="sr-only">(current)</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item active" href="./page_browse.php">Browse/Manage <span class="sr-only">(current)</span></a>
+                        <a class="dropdown-item" href="./page_browse.php">Browse/Manage</a>
                         <a class="dropdown-item" href="./page_add.php">Add New</a>
-                        <a class="dropdown-item" href="./page_birthday.php">Birthday</a>
+                        <a class="dropdown-item active" href="./page_birthday.php">Birthday <span class="sr-only">(current)</span></a>
                         <a class="dropdown-item" href="./page_email.php">Email Contacts</a>
                     </div>
                 </li>
@@ -59,7 +59,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="container pt-5">
         <div class="row">
             <div class="col d-flex flex-column flex-md-row justify-content-between align-items-baseline">
-                <h2>My Contacts List</h2>
+                <h2>Birthday Contacts List</h2>
                 <p class="text-info">Sales Rep: <?php echo htmlspecialchars($_SESSION["email"]); ?></p>  
             </div>
         </div>           
@@ -69,8 +69,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <table class="table table-hover table-sm small">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th></th>
                                 <th>Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
@@ -82,15 +80,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <?php
                                 require 'contactManager.php';
                                 $manager = new ContactManager($_SESSION["email"]);   
-                                $contacts = $manager->browseContacts();
+                                $contacts = $manager->getBirthdayContacts();
                                 $list = "";
                                 if (count($contacts) > 0) {
                                     foreach ($contacts as $c) {
                                         $cVars = $c->getVars();
                                         if ($cVars['salesrep_id'] == $manager->getSalesRepId()) {
-                                            $list .= "<tr><td><a href=\"./page_edit.php?id=".$cVars['id']."\"><i class=\"fas fa-pen\"></i></a></td>";
-                                            $list .= "<td><a class=\"text-danger\" href=\"./handler_contact.php?delete=".$cVars['id']."\"><i class=\"fas fa-trash-alt\"></i></a></td>";
-                                            $list .= "<td>".$cVars['firstname']." ".$cVars['lastname']."</td>";
+                                            $list .= "<tr><td>".$cVars['firstname']." ".$cVars['lastname']."</td>";
                                             $list .= "<td>".$cVars['phone']."</td>";
                                             $list .= "<td style=\"word-break:break-all;\">".$cVars['email']."</td>";
                                             $list .= "<td>".$cVars['ad_street']." ".$cVars['ad_city'].", ".$cVars['ad_province']." ".$cVars['ad_postalcode']."</td>";
@@ -99,8 +95,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                     }
                                     echo $list;
                                 } else {
-                                    echo "<tr><td colspan=7 class=\"text-center\">No Data</td></tr>";
+                                    echo "<tr><td colspan=5 class=\"text-center\">No Data</td></tr>";
                                 }
+                                
                             ?>                        
                         </tbody>  
                     </table>
